@@ -1,0 +1,42 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Iniciar sesión">
+  <main>
+    <h1>Iniciar sesión</h1>
+    <form id="login-form">
+      <label>
+        Email
+        <input type="email" name="email" required />
+      </label>
+      <label>
+        Contraseña
+        <input type="password" name="password" required />
+      </label>
+      <p id="error-msg" style="color:red; display:none;"></p>
+      <button type="submit">Entrar</button>
+    </form>
+    <p>¿No tenés cuenta? <a href="/registro">Registrate</a></p>
+  </main>
+</Layout>
+
+<script>
+  import { signIn } from "../lib/auth";
+
+  document.getElementById("login-form")!.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const email = (form.elements.namedItem("email") as HTMLInputElement).value;
+    const password = (form.elements.namedItem("password") as HTMLInputElement).value;
+    const errorMsg = document.getElementById("error-msg")!;
+
+    try {
+      await signIn(email, password);
+      window.location.href = "/";
+    } catch (err: any) {
+      errorMsg.textContent = err.message;
+      errorMsg.style.display = "block";
+    }
+  });
+</script>
